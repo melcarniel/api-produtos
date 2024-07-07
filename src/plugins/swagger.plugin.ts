@@ -1,5 +1,5 @@
 import * as Hapi from '@hapi/hapi'
-import Logger from '../plugins/logger.plugin'
+import Logger from './logger.plugin'
 import Config from '../config/environment.config'
 import HapiSwagger from 'hapi-swagger'
 import Inert from '@hapi/inert'

@@ -5,11 +5,11 @@ services:
         image: mysql:latest
         environment:
             MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: tech-challenge-fiap
+            MYSQL_DATABASE: tech-challenge-produtos
             MYSQL_USER: fiap
             MYSQL_PASSWORD: password
         ports:
-            - "3306:3306"
+            - "3308:3306"
         networks:
             - tech-challenge-rede
         volumes:
@@ -23,29 +23,29 @@ services:
         image: mysql:latest
         environment:
             MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: tech-challenge-fiap-test
+            MYSQL_DATABASE: tech-challenge-produtos-test
             MYSQL_USER: fiap-test
             MYSQL_PASSWORD: password
         ports:
-            - "3307:3306"
+            - "3309:3306"
         networks:
             - tech-challenge-rede
-    node-app:
-        container_name: fiap-backend
-        build:
-            context: .
-            dockerfile: Dockerfile
-        command: sh -c "npm run build:run"
-        ports:
-            - "3000:3000"
-        networks:
-            - tech-challenge-rede
-        volumes:
-            - /usr/src/app
-        depends_on:
-            mysql:
-                condition: service_healthy
-        restart: on-failure
+    # node-app:
+    #     container_name: fiap-backend
+    #     build:
+    #         context: .
+    #         dockerfile: Dockerfile
+    #     command: sh -c "npm run build:run"
+    #     ports:
+    #         - "3000:3000"
+    #     networks:
+    #         - tech-challenge-rede
+    #     volumes:
+    #         - /usr/src/app
+    #     depends_on:
+    #         mysql:
+    #             condition: service_healthy
+    #     restart: on-failure
 volumes:
     db_data:
 networks:
