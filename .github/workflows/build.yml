@@ -19,7 +19,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Install dependencies
-        run: yarn
+        run: npm
       - name: Test and coverage
-        run: yarn jest --coverage
+        run: npm jest --coverage
 
