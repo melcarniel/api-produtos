@@ -36,11 +36,19 @@ jobs:
 
       - name: Wait for MySQL
         run: |
-          # Espera até que o MySQL esteja pronto para aceitar conexões
-          while ! mysqladmin ping -h"127.0.0.1" --silent; do
-            echo 'Esperando pelo MySQL...'
-            sleep 1
+          echo "Esperando pelo MySQL..."
+          RETRY_COUNT=0
+          MAX_RETRIES=30
+          until mysqladmin ping -h127.0.0.1 --port=3309 --silent; do
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+              echo "MySQL não ficou pronto a tempo."
+              exit 1
+            fi
+            echo "Ainda esperando pelo MySQL... ($RETRY_COUNT/$MAX_RETRIES)"
+            sleep 2
           done
+          echo "MySQL está pronto para aceitar conexões."
         env:
           MYSQL_ROOT_PASSWORD: root
 
