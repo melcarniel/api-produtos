@@ -9,17 +9,52 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:5.7
+        ports:
+          - 3309:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testdb
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Wait for MySQL
+        run: |
+          # Espera até que o MySQL esteja pronto para aceitar conexões
+          while ! mysqladmin ping -h"127.0.0.1" --silent; do
+            echo 'Esperando pelo MySQL...'
+            sleep 1
+          done
+        env:
+          MYSQL_ROOT_PASSWORD: root
+
+      - name: Run tests and generate coverage
+        env:
+          DATABASE_HOST: 127.0.0.1
+          DATABASE_USER: root
+          DATABASE_PASSWORD: root
+          DATABASE_NAME: testdb
+        run: npx jest --coverage
+     
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: Install dependencies
-        run: npm
-      - name: Test and coverage
-        run: npm jest --coverage
 
