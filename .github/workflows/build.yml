@@ -58,7 +58,7 @@ jobs:
           DATABASE_USER: root
           DATABASE_PASSWORD: root
           DATABASE_NAME: testdb
-        run: npx jest --coverage
+        run: npx jest --coverage --detectOpenHandles
      
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
